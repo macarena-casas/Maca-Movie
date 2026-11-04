@@ -1,9 +1,21 @@
+using maca_movie.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//Incluir dbcontext
+builder.Services.AddDbContext<MovieDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("MovieDbContext")));
+
+
+
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

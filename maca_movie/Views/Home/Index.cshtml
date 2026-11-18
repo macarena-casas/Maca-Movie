@@ -1,8 +1,214 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
+<body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <main class="flex flex-col relative w-full pt-16 pb-20 bg-surface">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+        <div class="flex flex-col w-full text-light pb-4" style="background-color: #0d0e15; font-family: 'Inter', sans-serif;">
+            <div class="container-fluid px-3 pt-2">
+                <!-- Header de Sección -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+
+                    <div class="d-flex align-items-center gap-2">
+                        <h1 class="h4 mb-0 fw-bold tracking-tight text-white" style="font-family: 'Space Grotesk', sans-serif;">A-D-B Movies</h1>
+                        <span class="badge rounded-pill bg-primary bg-opacity-25 text-primary border border-dark border-opacity-50 px-2 py-1" style="font-size: 0.72rem; font-family: 'JetBrains Mono', monospace;">
+                            @Model.Pelicula.Count películas en esta página
+                        </span>
+                    </div>
+
+                    <!-- Conmutador Grid / List -->
+                    <div aria-label="Cambio de Vista" class="btn-group btn-group-sm p-1 rounded-2 border border-secondary border-opacity-25" role="group" style="background: #161922;">
+                        <button class="btn btn-outline-secondary border-0 text-white px-2 py-1 active" id="btnViewGrid" onclick="toggleView('grid')" title="Vista Cuadrícula" type="button">
+                            <i class="bi bi-grid-fill"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary border-0 text-secondary px-2 py-1" id="btnViewList" onclick="toggleView('list')" title="Vista Lista" type="button">
+                            <i class="bi bi-view-list"></i>
+                        </button>
+                    </div>
+
+                </div>
+                <!-- Barra de Búsqueda  -->
+                <div class="row g-2 mb-3">
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary ps-3" style="background-color: #161922 !important;">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control form-control-sm bg-dark border-secondary border-opacity-25 text-light py-2" placeholder="Buscar por título, director, actor..." style="background-color: #161922 !important; box-shadow: none;" type="search" />
+                        <button class="btn btn-outline-secondary border-opacity-25 text-white d-flex align-items-center gap-1 px-3" style="background-color: #1c202a;" type="button">
+                            <i class="bi bi-sliders2"></i>
+                            <span class="badge rounded-circle bg-primary p-1" style="font-size: 0.55rem; width: 14px; height: 14px; line-height: 7px;">2</span>
+                        </button>
+
+                    </div>
+
+                </div>
+                <!-- Filtro Horizontal de Géneros -->
+                <div class="d-flex gap-2 overflow-x-auto pb-2 mb-2 no-scrollbar" style="white-space: nowrap; -webkit-overflow-scrolling: touch;">
+                    <button class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-semibold text-white shadow-sm" style="font-size: 0.8rem;">Todos</button>
+
+
+                    @foreach (var genero in Model.Genero)
+                    {
+                        <tr>
+                            <td>
+                                <button class="btn btn-outline-secondary border-opacity-25 rounded-pill px-3 py-1 bg-dark">@genero.Descripcion</button>
+                            </td>
+                        </tr>
+                    }
+
+                </div>
+                <!-- Filtro de Formatos y Plataformas -->
+                <div class="d-flex align-items-center gap-2 overflow-x-auto pb-3 mb-2" style="white-space: nowrap;">
+                    <span class="text-secondary small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.05em;">Plataformas:</span>
+
+                    @foreach (var item in Model.Plataforma)
+                    {
+                        <tr>
+                            <td>
+                                <button class="btn btn-outline-secondary border-opacity-25 rounded-pill px-3 py-1 bg-dark">@item.Nombre</button>
+                            </td>
+                        </tr>
+                    }
+                </div>
+
+                <!-- Colección de Películas (Container adaptable Grid / List) -->
+                <div class="row g-3 mb-4" id="moviesContainer">
+                    <div class="row row-cols-2 row-cols-md-3 " id="moviesContainer">
+
+    
+                        @foreach (var item in Model.Pelicula)
+                        {
+
+                            <div class="col-12 col-sm-6 movie-card-wrapper">
+                                <div class="card h-100 border border-secondary border-opacity-25 text-light overflow-hidden shadow-sm position-relative" style="background-color: #151821;">
+                                    <div class="row g-0 h-100 flex-column flex-sm-row">
+
+                                        <div class="col-12 col-sm-5 position-relative overflow-hidden" style="min-height: 240px; max-height: 290px;">
+                                            <img alt="@item.Nombre" class="w-100 h-100 object-fit-cover" src="@item.PosterUrl" />
+
+                                            <span class="position-absolute top-0 start-0 m-2 badge bg-black bg-opacity-75 text-warning border border-warning border-opacity-25 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                                                <i class="bi bi-star-fill text-warning"></i> @item.PromedioRating
+                                            </span>
+                                        </div>
+
+                                        <div class="col-12 col-sm-7 p-3 d-flex flex-col justify-content-between">
+                                            <div>
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.65rem;">
+                                                        <i class="bi bi-magic me-1"></i>98% Match IA
+                                                    </span>
+                                                    <button class="btn btn-sm p-0 text-secondary border-0 fav-btn" onclick="toggleFav(this)">
+                                                        <i class="bi bi-heart fs-5"></i>
+                                                    </button>
+                                                </div>
+                                                <h2 class="h6 fw-bold text-white mb-1" style="font-family: 'Space Grotesk', sans-serif;">@item.Nombre</h2>
+                                                <tr />
+
+                                                <div class="d-flex align-items-center gap-2 text-secondary mb-2" style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">
+                                                    <span>@item.FechaLanzamiento.ToString("dd/MM/yyyy")</span>
+                                                    <span>•</span>
+                                                    <span><i class="bi bi-clock me-1"></i>@item.MinutosDuracion</span>
+                                                    <span>•</span>
+                                                    <span class="text-light small fw-semibold" style="font-size: 0.75rem;">@item.Genero.Descripcion</span>
+                                                </div>
+
+
+                                                <p class="text-secondary small mb-3 text-truncate-2" style="font-size: 0.8rem; line-height: 1.35;">
+                                                    @item.Sinopsis
+                                                </p>
+
+
+                                                <button class="btn btn-sm btn-primary px-3 py-1 fw-semibold d-flex align-items-center gap-1 shadow-sm" style="font-size: 0.78rem;">
+                                                    <span>Ver Ficha</span>
+                                                    <i class="bi bi-chevron-right" style="font-size: 0.7rem;"></i>
+                                                </button>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+                <div class="row g-3" id="Paginado">
+
+                    @if (Model.TotalPaginas > 1)
+                    {
+                        <nav aria-label="Paginación de películas">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                                    <a asp-action="index" class="page-link" asp-route-pagina="@Model.PaginaActual-1"> Anterior</a>
+                                </li>
+
+                                @for (var pagina = 1; pagina <= Model.TotalPaginas; pagina++)
+                                {
+                                    <li class="page-item @(pagina == Model.PaginaActual ? "active" : "")">
+                                        <a class="page-link" asp-action="Index" asp-route-page="@pagina">@pagina</a>
+                                    </li>
+                                }
+
+                                <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                                    <a asp-action="index" class="page-link" asp-route-pagina="@Model.PaginaActual + 1"> Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
+                </div>
+ 
+            </div>
+        </div>
+
+        <script>
+                    function toggleFav(btn) {
+                      const icon = btn.querySelector('i');
+                      if (icon.classList.contains('bi-heart')) {
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+                        btn.classList.remove('text-secondary');
+                        btn.classList.add('text-danger');
+                      } else {
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                        btn.classList.remove('text-danger');
+                        btn.classList.add('text-secondary');
+                      }
+                    }
+
+                    function toggleView(viewType) {
+                      const btnGrid = document.getElementById('btnViewGrid');
+                      const btnList = document.getElementById('btnViewList');
+                      const cards = document.querySelectorAll('.movie-card-wrapper');
+
+                      if (viewType === 'list') {
+                        btnList.classList.add('active', 'text-white');
+                        btnList.classList.remove('text-secondary');
+                        btnGrid.classList.remove('active', 'text-white');
+                        btnGrid.classList.add('text-secondary');
+
+                        cards.forEach(card => {
+                          card.classList.remove('col-sm-6');
+                          card.classList.add('col-12');
+                        });
+                      } else {
+                        btnGrid.classList.add('active', 'text-white');
+                        btnGrid.classList.remove('text-secondary');
+                        btnList.classList.remove('active', 'text-white');
+                        btnList.classList.add('text-secondary');
+
+                        cards.forEach(card => {
+                          card.classList.remove('col-12');
+                          card.classList.add('col-sm-6');
+                        });
+                      }
+                    }
+        </script>
+    </main>
+</body></html>

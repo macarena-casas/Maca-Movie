@@ -1,0 +1,148 @@
+@model maca_movie.Models.Pelicula
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Pelicula</h4>
+<hr />
+
+
+<form action="/Peliculas/Create" class="needs-validation mb-4" id="formNuevaPelicula" method="post" novalidate="">
+<!-- Campo: Titulo (string) -->
+<div class="mb-3">
+<label class="form-label d-flex justify-content-between align-items-center fw-medium mb-1" for="Titulo">
+<span><i class="bi bi-film me-1 text-danger"></i>Título de la Película <span class="text-danger">*</span></span>
+<span class="text-secondary small" style="font-size: 0.75rem;">Requerido</span>
+</label>
+<div class="input-group has-validation">
+<span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-type-h1"></i></span>
+<input class="form-control bg-dark border-secondary text-light" id="Titulo" maxlength="150" name="Titulo" placeholder="Ej: Oppenheimer" required="" type="text"/>
+<div class="invalid-feedback">
+            Por favor ingresa el título de la película.
+          </div>
+</div>
+</div>
+<!-- Fila 2: MinutosDuracion (int) & FechaLanzamiento (Date) -->
+<div class="row g-2 mb-3">
+<!-- MinutosDuracion -->
+<div class="col-6">
+<label class="form-label fw-medium mb-1" for="MinutosDuracion" style="font-size: 0.85rem;">
+<i class="bi bi-clock me-1 text-danger"></i>Duración <span class="text-danger">*</span>
+</label>
+<div class="input-group input-group-sm has-validation">
+<input class="form-control bg-dark border-secondary text-light" id="MinutosDuracion" max="600" min="1" name="MinutosDuracion" placeholder="120" required="" type="number"/>
+<span class="input-group-text bg-dark border-secondary text-secondary">min</span>
+<div class="invalid-feedback">Mín 1 min.</div>
+</div>
+</div>
+<!-- FechaLanzamiento -->
+<div class="col-6">
+<label class="form-label fw-medium mb-1" for="FechaLanzamiento" style="font-size: 0.85rem;">
+<i class="bi bi-calendar-event me-1 text-danger"></i>Estreno <span class="text-danger">*</span>
+</label>
+<div class="input-group input-group-sm has-validation">
+<input class="form-control bg-dark border-secondary text-light" id="FechaLanzamiento" name="FechaLanzamiento" required="" type="date"/>
+<div class="invalid-feedback">Fecha válida.</div>
+</div>
+</div>
+</div>
+<!-- Fila 3: Selectores Relacionales FK (GeneroId & PlataformaId) -->
+<div class="row g-2 mb-3">
+<!-- GeneroId -->
+<div class="col-12 col-sm-6">
+<label class="form-label fw-medium mb-1" for="GeneroId" style="font-size: 0.85rem;">
+<i class="bi bi-tags me-1 text-danger"></i>Género (FK) <span class="text-danger">*</span>
+</label>
+   <div class="form-group">
+ <label asp-for="Genero" class="control-label"></label>
+<select class="form-control form-select-sm bg-dark border-secondary text-light" id="GeneroId"asp-items="ViewBag.Genero" name="GeneroId" required="">
+<option disabled="" selected="" value="">Selecciona género...</option>
+</select>
+<span asp-validation-for="Genero" class="text-danger"></span>
+</div>
+
+<div class="invalid-feedback">Elige un género.</div>
+</div>
+<!-- PlataformaId -->
+<div class="col-12 col-sm-6">
+<label class="form-label fw-medium mb-1" for="PlataformaId" style="font-size: 0.85rem;">
+<i class="bi bi-tv me-1 text-danger"></i>Plataforma / Formato <span class="text-danger">*</span>
+</label>
+   <div class="form-group">
+ <label asp-for="Plataforma" class="control-label"></label>
+<select class="form-control form-select-sm bg-dark border-secondary text-light" id="PlataformaId"asp-items="ViewBag.Plataforma" name="PlataformaId" required="">
+<option disabled="" selected="" value="">Selecciona una Plataforma...</option>
+</select>
+<div class="invalid-feedback">Elige una plataforma.</div>
+</div>
+</div>
+<!-- Campo: PosterUrl (string) con Vista Previa en Vivo -->
+<div class="mb-3">
+<label class="form-label d-flex justify-content-between align-items-center fw-medium mb-1" for="PosterUrl">
+<span><i class="bi bi-image me-1 text-danger"></i>URL Portada / Póster <span class="text-danger">*</span></span>
+<button class="btn btn-link btn-sm text-secondary text-decoration-none p-0" id="btnTestPoster" style="font-size: 0.75rem;" type="button">
+<i class="bi bi-arrow-repeat me-1"></i>Actualizar Vista
+          </button>
+</label>
+<div class="input-group has-validation mb-2">
+<span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-link-45deg"></i></span>
+<input class="form-control bg-dark border-secondary text-light" id="PosterUrl" name="PosterUrl" placeholder="https://image.tmdb.org/t/p/w500/..." required="" type="url"/>
+<button class="btn btn-outline-secondary" id="btnPasteSample" type="button">Ejemplo</button>
+<div class="invalid-feedback">URL de póster válida requerida.</div>
+</div>
+<!-- Live Preview Card del Póster -->
+<div class="card border-0 bg-dark p-2 d-flex flex-row align-items-center gap-3 rounded-2" style="background-color: #1a1c20 !important;">
+<div class="position-relative flex-shrink-0 rounded overflow-hidden" style="width: 58px; height: 84px; background-color: #0c0e12;">
+<img alt="Previsualización de portada" class="w-100 h-100 object-fit-cover" data-alt="A dramatic cinematic movie poster preview in deep dark atmospheric lighting with fiery red and projector amber ambient reflections, professional movie studio typography style" id="posterPreviewImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1enYDKGn2g-2YJJmEfUqrP4JtSvkF5yaDDQUVghG6TtFqT9mMh4A5Ln7qlpABB06Yj1bG9pE2Br3VnlKez1x0Z38pwfcB2A-EcsIQkKLkJlYVkEk5JWFQdJwYlttZmnSdAYWf-sNw1JBjIwhLdMT6Pmwv14-Fd6Zc7PodH6RfV06P_qOHjAfYR3dSJcLWeXg1ncIdq02Nz10Wpyiy9I5sMJnV7aXThvHpZ2GJxsFp"/>
+<span class="position-absolute top-0 end-0 badge text-bg-warning p-1 m-1" style="font-size: 0.55rem; font-weight: 700;">4K</span>
+</div>
+<div class="flex-grow-1 min-w-0">
+<span class="text-secondary text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.05em;">Previsualización en Vivo</span>
+<div class="text-light fw-bold text-truncate" id="previewTitle" style="font-size: 0.95rem;">Título no definido</div>
+<div class="d-flex align-items-center gap-2 mt-1">
+<span class="badge bg-secondary-subtle text-secondary" id="previewDuration" style="font-size: 0.7rem;">-- min</span>
+<span class="badge" id="previewFormat" style="background-color: #007d97; color: #f1fbff; font-size: 0.65rem;">IMAX</span>
+<span class="text-warning" style="font-size: 0.75rem;"><i class="bi bi-star-fill me-1"></i>9.4</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Campo: Sinopsis (string multilínea) -->
+<div class="mb-4">
+<div class="d-flex justify-content-between align-items-center mb-1">
+<label class="form-label fw-medium mb-0" for="Sinopsis">
+<i class="bi bi-text-paragraph me-1 text-danger"></i>Sinopsis Argumental <span class="text-danger">*</span>
+</label>
+<span class="text-secondary font-monospace" id="charCounter" style="font-size: 0.75rem;">0 / 500</span>
+</div>
+<textarea class="form-control bg-dark border-secondary text-light" id="Sinopsis" maxlength="500" name="Sinopsis" placeholder="Escribe un resumen apasionante de la trama o usa el Asistente IA para generar una introducción atractiva para los espectadores..." required="" rows="4"></textarea>
+<div class="d-flex justify-content-between align-items-center mt-1">
+<div class="invalid-feedback d-block" id="sinopsisValidationMsg" style="display: none !important;">Por favor ingresa la sinopsis de la película.</div>
+<button class="btn btn-sm btn-link text-danger text-decoration-none ms-auto p-0" id="btnGenSinopsis" style="font-size: 0.75rem;" type="button">
+<i class="bi bi-sparkles me-1"></i>Sugerir con IA
+          </button>
+</div>
+</div>
+<!-- Acciones de Formulario -->
+<div class="d-grid gap-2">
+<button class="btn btn-danger btn-lg py-3 fw-bold d-flex align-items-center justify-content-center shadow-lg" style="background-color: #e50914; border-color: #e50914;" type="submit">
+<i class="bi bi-plus-circle-fill me-2 fs-5"></i>
+<span>Guardar Película en Cartelera</span>
+</button>
+<a class="btn btn-outline-secondary py-2 text-decoration-none" href="javascript:history.back()">
+<i class="bi bi-x-circle me-1"></i>Cancelar y Descartar
+        </a>
+</div>
+</form>
+
+
+
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

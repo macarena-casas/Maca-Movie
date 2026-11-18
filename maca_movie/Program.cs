@@ -14,8 +14,22 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("MovieDbContext")
 
 var app = builder.Build();
 
+//invocar la ejecucion del DbSeeder con un using scope
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = scope.ServiceProvider.GetRequiredService<MovieDbContext>();
+        DbSeeder.Seed(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
 
-
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

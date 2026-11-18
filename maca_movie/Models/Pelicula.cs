@@ -9,6 +9,7 @@ namespace maca_movie.Models
         [Required]
         [StringLength(100)]
         public String Nombre { get; set; }
+        
         [DataType(DataType.Date)]
         public DateTime FechaLanzamiento { get; set; }
         [Required]

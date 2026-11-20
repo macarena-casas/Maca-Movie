@@ -7,5 +7,6 @@
         public  List<Pelicula> Pelicula { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
+        
     }
 }
